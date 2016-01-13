@@ -1,0 +1,42 @@
+package AllThoseTerritories;
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.List;
+
+
+public class Panel extends JPanel implements MouseListener{
+    private List<Polygon> t;
+
+    public Panel(List<Polygon> savedPoints){
+        this.setSize(1250,650);
+        this.setLayout(null);
+        this.t = savedPoints;
+        this.addMouseListener(this);
+    }
+    @Override
+    protected void paintComponent(Graphics g){
+        super.paintComponent(g);
+        g.setColor(Color.BLUE);
+        for(Polygon p : t){
+            g.drawPolygon(p);
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent a){}
+
+    @Override
+    public void mouseExited(MouseEvent a){}
+    @Override
+    public void mouseReleased(MouseEvent a){}
+    @Override
+    public void mouseEntered(MouseEvent a){}
+    @Override
+    public void mousePressed(MouseEvent a){}
+
+
+
+}
