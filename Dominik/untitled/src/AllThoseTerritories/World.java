@@ -13,6 +13,7 @@ public class World
     List<Continent> _AllContinents;
     List<Player> _Players;
     boolean firstphasenotready = true;
+
     public World(List<ContinentPatch> Allcontinents,List<String> neighbors,List<String> ContinentPatches,List<String> Capitals)
     {
         _Allcontinentpatchess = Allcontinents;
@@ -28,6 +29,16 @@ public class World
         _Players.add(p);
     }
 
+    public void handoutfigures(Player p)
+    {
+        p.add_figures(getContinentPatchesfromPlayer(p.get_name()).size() % 3);
+        for (Continent a : get_owned_Continents(p.get_name()))
+        {
+            p.add_figures(a.getBonus());
+        }
+        System.out.println("Player: " + p.get_name() + "has now " + p.get_Figures() + " figures");
+    }
+
     private void AddCapitals(List<String> Capitals)
     {
         for(String a : Capitals)
@@ -36,6 +47,19 @@ public class World
             getContinentPatchwithname(Work[0]).setCapital(new Point(Integer.parseInt(Work[1]),Integer.parseInt(Work[2])));
         }
 
+    }
+
+    private List<Continent> get_owned_Continents(String playername)
+    {
+        List<Continent> ret = new ArrayList<Continent>();
+        for(Continent c : _AllContinents)
+        {
+           if(c.is_Continent_owned(getContinentPatchesfromPlayer(playername)))
+           {
+                ret.add(c);
+           }
+        }
+        return ret;
     }
 
     private void AddPatchestoContinent(List<String> Continentpatch)
@@ -78,29 +102,39 @@ public class World
 
         }
     }
+
+    public boolean checkifallcontinentsareconquered()
+    {
+        boolean allset = true;
+        for(ContinentPatch a : get_Allcontinentpatchess())
+        {
+            if(a.get_owner() == "")
+            {
+                allset = false;
+                System.out.println(a.get_Name());
+            }
+        }
+        return allset;
+    }
+
     //dient zum besetzen eines Gebietes, solange noch feindliche Truppen auf dem Gebiet sind liefert die Methode false zurück und kann somit noch nicht besetzt werden.
     //wenn das Gebiet leer ist, wird der Owner auf "" gesetzt.
     public boolean besetzen(String ContinentPatchname,Player owner,int Figurestomove)
     {
         ContinentPatch tmp = getContinentPatchwithname(ContinentPatchname);
-        if(tmp.get_owner() != "")
+        if(tmp.get_owner().equals(""))
         {
-            if(firstphasenotready)
-            {
-                tmp.setowner(owner.get_name());
-                tmp.setFiguresonpatch(Figurestomove);
-            }
-            else
-            {
-                if(owner.get_Figures() > 0)
+                if(owner.get_Figures() - Figurestomove > 0)
                 {
                     tmp.setowner(owner.get_name());
                     tmp.setFiguresonpatch(Figurestomove);
+                    owner.reducefigures(Figurestomove);
+                    System.out.println(owner.get_name() + " Conquered " + ContinentPatchname);
                 }
-            }
         }
         else
         {
+            System.out.println("Select another continentpatch, "+ContinentPatchname+" is already owned.");
             return false;
         }
         return true;
@@ -111,6 +145,20 @@ public class World
 
     //}
 
+    public List<ContinentPatch> getContinentPatchesfromPlayer(String Playername)
+    {
+        List<ContinentPatch> contilist = new ArrayList<ContinentPatch>();
+        String Work = Playername;
+        for(ContinentPatch cur : _Allcontinentpatchess)
+        {
+            if(Work.equals(cur.get_owner()))
+            {
+                contilist.add(cur);
+            }
+        }
+        return contilist;
+    }
+
     public ContinentPatch getContinentPatchwithname(String Name)
     {
         String Work = Name.replace(" ","");
@@ -118,7 +166,7 @@ public class World
         {
             if(Work.equals(cur.get_Name().replace(" ", "")))
             {
-                System.out.println(cur.get_Name());
+                //System.out.println(cur.get_Name());
             return cur;
 
             }

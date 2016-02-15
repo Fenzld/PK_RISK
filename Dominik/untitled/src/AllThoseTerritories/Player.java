@@ -1,5 +1,6 @@
 package AllThoseTerritories;
 
+import java.awt.*;
 import java.util.Random;
 
 /**
@@ -9,31 +10,54 @@ public class Player
 {
     private String _name;
     private int _Figures = 0;
-    public Player(String Name,int Figures)
+    private Color _Color;
+    public Player(String Name,int Figures,Color c)
     {
         _name = Name;
         _Figures = Figures;
+        _Color = c;
     }
 
-    public int roll_the_dice()
+    public void reducefigures(int count)
+    {
+        _Figures -= count;
+    }
+
+    public int roll_the_dice(boolean twodices)
     {
         boolean valid = false;
         int val1 = 0;
         int val2 = 0;
         while(!valid)
         {
-            if(val1 == 0 || val1 > 6)
+            if(twodices)
             {
-                val1 = (int)Math.random() * 10;
-            }
-            else if(val2 == 0 || val2 > 6)
-            {
-                val2 = (int)Math.random() * 10;
+                if (val2 == 0 || val2 > 6)
+                {
+                    val2 = (int) Math.random() * 10;
+                }
+                else if(val1 == 0 || val1 > 6)
+                {
+                    val1 = (int)Math.random() * 10;
+                }
+                else
+                {
+                    valid = true;
+                }
             }
             else
             {
-                valid = true;
+                if (val1 == 0 || val1 > 6)
+                {
+                    val1 = (int) Math.random() * 10;
+                }
+                else
+                {
+                    valid = true;
+                }
             }
+
+
         }
         return val1 + val2;
     }
@@ -45,6 +69,16 @@ public class Player
     public int get_Figures()
     {
         return _Figures;
+    }
+
+    public void add_figures(int value)
+    {
+        _Figures += value;
+    }
+
+    public Color get_Color()
+    {
+        return _Color;
     }
 
 

@@ -99,6 +99,16 @@ public class Main {
         return ret;
     }
 
+    private static boolean checkifalreadyexists(List<ContinentPatch> tmlist, ContinentPatch tm)
+    {
+        for(ContinentPatch a : tmlist)
+        {
+            if(a.get_Name().equals(tm.get_Name()))
+                return false;
+        }
+        return true;
+    }
+
 
     public static void main(String[] args) {
         String line = "";
@@ -113,17 +123,22 @@ public class Main {
 
             BufferedReader br = new BufferedReader(new FileReader("world.map"));
             while ((line = br.readLine()) != null) {
-                if (line.contains("patch-of")) {
-                    Continents.add(createPoly(line));
+                if (line.contains("patch-of"))
+                {
+                    if(checkifalreadyexists(Continents, createPoly(line)))
+                        Continents.add(createPoly(line));
                 }
                 if (line.contains("neighbors-of")) {
-                    Neighborlist.add(neighbours(line));
+                    if(!Neighborlist.contains(neighbours(line)))
+                        Neighborlist.add(neighbours(line));
                 }
                 if (line.contains("capital-of")) {
-                   Capitals.add(capital(line));
+                    if(!Capitals.contains(capital(line)))
+                        Capitals.add(capital(line));
                 }
                 if (line.contains("continent")) {
-                    ContinentPatches.add(continent(line));
+                        if(!ContinentPatches.contains(continent(line)))
+                            ContinentPatches.add(continent(line));
                 }
             }
 
