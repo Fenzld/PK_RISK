@@ -25,7 +25,6 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
     boolean begin;
     boolean working;
     private Image backgroundImage;
-    JLabel label;
 
     public Panel(World Continents) {
         this.setSize(1250, 650);
@@ -52,7 +51,7 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
         this.addMouseListener(new PopupMenuMouseListener(popmen));
 
         //Label
-        label = new JLabel("Test");
+        JLabel label = new JLabel("Test");
         label.setLocation(500, 570);
         label.setSize(200, 30);
         this.add(label);
