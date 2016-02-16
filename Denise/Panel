@@ -25,6 +25,7 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
     boolean begin;
     boolean working;
     private Image backgroundImage;
+    JLabel label;
 
     public Panel(World Continents) {
         this.setSize(1250, 650);
@@ -41,16 +42,20 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
 
         //Button wird erstellt
         final JButton button1 = new JButton("Zug beenden");
-        button1.setSize(110,30);
+        button1.setSize(110, 30);
         button1.setLocation(1100, 570);
         button1.setBackground(Color.ORANGE);
         this.add(button1);
 
-        //PopMenu
+        //PopMenu - kommt von PopupMenuMouseListener
         final JPopupMenu popmen = new JPopupMenu();
-        this.addMouseListener( new PopupMenuMouseListener(popmen) );
+        this.addMouseListener(new PopupMenuMouseListener(popmen));
 
-
+        //Label
+        label = new JLabel("Test");
+        label.setLocation(500, 570);
+        label.setSize(200, 30);
+        this.add(label);
 
         try {
             backgroundImage = ImageIO.read(new File("sea_bg.png"));
@@ -181,7 +186,6 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
     @Override
     public void mouseExited(MouseEvent a) {
     }
-
 
 
     @Override
