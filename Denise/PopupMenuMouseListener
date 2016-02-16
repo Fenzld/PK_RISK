@@ -1,0 +1,28 @@
+package AllThoseTerritories;
+
+import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class PopupMenuMouseListener extends MouseAdapter
+{
+    private final JPopupMenu popmen;
+    private int counter =1;
+
+    public PopupMenuMouseListener( JPopupMenu popmen )
+    {
+this.popmen = popmen;
+    }
+
+    @Override public void mouseReleased( MouseEvent me ) {
+        if ( me.isPopupTrigger() )
+            popmen.show( me.getComponent(), me.getX(), me.getY() );
+//ohne if werden jedes mal diese 2 Items erstellt
+if(counter ==1){
+        popmen.add( new JMenuItem( "Armeen senden" ) );
+        popmen.add(new JMenuItem("Abbrechen"));
+counter ++;}
+        }
+
+
+}
