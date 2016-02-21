@@ -47,7 +47,76 @@ public class World
             String[] Work = a.split(",");
             getContinentPatchwithname(Work[0]).setCapital(new Point(Integer.parseInt(Work[1]),Integer.parseInt(Work[2])));
         }
+    }
 
+    public enum attackstate
+    {
+        win,notenoughmen,notallmendown;
+    }
+
+    private int gethighestnumber(int[] tmp)
+    {
+        int ret = 0;
+        for(int i : tmp)
+        {
+            if(i > ret)
+                ret = i;
+        }
+        return ret;
+    }
+
+    private int getindex(int[] tmp,int equals)
+    {
+        int counter = 0;
+        for(int a : tmp)
+        {
+            if(equals == a)
+                 return counter;
+            counter ++;
+        }
+        return 0;
+    }
+
+    private attackstate Attack(ContinentPatch attacker, ContinentPatch defender)
+    {
+        Player att = attacker.get_owner();
+        Player def = defender.get_owner();
+        int[] dicesatt = att.roll_the_dice(attacker.get_figuresonpatch());
+        int[] dicesdef = def.roll_the_dice(defender.get_figuresonpatch());
+
+                if(dicesatt.length > 0)
+                {
+                    if(gethighestnumber(dicesatt) > gethighestnumber(dicesdef))
+                    {
+                        defender.reduce_figuresonpatch(1);
+                        dicesatt[getindex(dicesatt,gethighestnumber(dicesatt))] = 0;
+                        dicesdef[getindex(dicesdef,gethighestnumber(dicesdef))] = 0;
+                    }
+                    else
+                    {
+                        attacker.reduce_figuresonpatch(1);
+                    }
+
+                    if(dicesatt.length >=2 && dicesdef.length >= 2)
+                    {
+                        if(gethighestnumber(dicesatt) > gethighestnumber(dicesdef))
+                        {
+                            defender.reduce_figuresonpatch(1);
+                        }
+                        else
+                        {
+                            attacker.reduce_figuresonpatch(1);
+                        }
+
+                    }
+                }
+                else
+                    return attackstate.notenoughmen;
+
+        if(defender.get_figuresonpatch() == 0)
+            return attackstate.win;
+
+        return attackstate.notallmendown;
     }
 
     private List<Continent> get_owned_Continents(String playername)
@@ -109,10 +178,10 @@ public class World
         boolean allset = true;
         for(ContinentPatch a : get_Allcontinentpatchess())
         {
-            if(a.get_owner() == "")
+            if(a.get_owner() == null)
             {
                 allset = false;
-                System.out.println(a.get_Name());
+                //System.out.println(a.get_Name());
             }
         }
         return allset;
@@ -128,7 +197,7 @@ public class World
             //der owner wird überschrieben, im falle in einem Continentpatch alle armeen geschlagen wurden, muss der owner auf "" gesetzt werden
                 if(owner.get_Figures() - Figurestomove >= 0)
                 {
-                    tmp.setowner(owner.get_name());
+                    tmp.setowner(owner);
                     tmp.setFiguresonpatch(Figurestomove,owner);
                     owner.reducefigures(Figurestomove);
                     System.out.println(owner.get_name() + " Conquered " + ContinentPatchname);

@@ -23,43 +23,29 @@ public class Player
         _Figures -= count;
     }
 
-    public int roll_the_dice(boolean twodices)
+    public int[] roll_the_dice(int availabletroops)
     {
-        boolean valid = false;
-        int val1 = 0;
-        int val2 = 0;
-        while(!valid)
+
+        if(availabletroops > 3)
+            availabletroops = 3;
+        else if (availabletroops > 2)
         {
-            if(twodices)
-            {
-                if (val2 == 0 || val2 > 6)
-                {
-                    val2 = (int) Math.random() * 10;
-                }
-                else if(val1 == 0 || val1 > 6)
-                {
-                    val1 = (int)Math.random() * 10;
-                }
-                else
-                {
-                    valid = true;
-                }
-            }
-            else
-            {
-                if (val1 == 0 || val1 > 6)
-                {
-                    val1 = (int) Math.random() * 10;
-                }
-                else
-                {
-                    valid = true;
-                }
-            }
-
-
+            availabletroops = 2;
         }
-        return val1 + val2;
+        else if(availabletroops > 1)
+        {
+            availabletroops = 1;
+        }
+        else
+            availabletroops = 0;
+
+        int[] retdices = new int[availabletroops];
+        Random rn = new Random();
+        for(int i = 0; i < availabletroops-1;i++)
+        {
+            retdices[i] =  rn.nextInt(5) + 1;
+        }
+        return retdices;
     }
 
     public String get_name()
