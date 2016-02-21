@@ -82,6 +82,7 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
         Graphics2D g2 = (Graphics2D) g;
         g2.drawImage(backgroundImage, 0, 0, this);
         g2.setColor(Color.BLUE);
+        lines(g);
 
         g2.setStroke(new BasicStroke(3));
         for (ContinentPatch p : _Continents.get_Allcontinentpatchess()) {
