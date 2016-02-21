@@ -34,9 +34,9 @@ public class ContinentPatch
 
     public boolean setFiguresonpatch(int figures,Player p)
     {
-        if(_owner.equals(p.get_name()))
+        if(_owner.get_name().equals(p.get_name()))
         {
-            _figuresonpatch = figures;
+            _figuresonpatch += figures;
             troopstext.setText(String.valueOf(_figuresonpatch));
             return true;
         }

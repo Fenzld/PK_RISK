@@ -77,7 +77,7 @@ public class World
         return 0;
     }
 
-    private attackstate Attack(ContinentPatch attacker, ContinentPatch defender)
+    public attackstate Attack(ContinentPatch attacker, ContinentPatch defender)
     {
         Player att = attacker.get_owner();
         Player def = defender.get_owner();
@@ -192,9 +192,9 @@ public class World
     public boolean besetzen(String ContinentPatchname,Player owner,int Figurestomove,boolean besetzenvar)
     {
         ContinentPatch tmp = getContinentPatchwithname(ContinentPatchname);
-        if(tmp.get_owner().equals(""))
+        if(tmp.get_owner() == null)
         {
-            //der owner wird überschrieben, im falle in einem Continentpatch alle armeen geschlagen wurden, muss der owner auf "" gesetzt werden
+            //der owner wird überschrieben, im falle in einem Continentpatch alle armeen geschlagen wurden, muss der owner auf null gesetzt werden
                 if(owner.get_Figures() - Figurestomove >= 0)
                 {
                     tmp.setowner(owner);
@@ -206,7 +206,7 @@ public class World
             else
                     System.out.println("Select another continentpatch, "+ContinentPatchname+" is already owned.");
         }
-        else if(tmp.get_owner().equals(owner.get_name()) && !besetzenvar)
+        else if(tmp.get_owner().get_name().equals(owner.get_name()) && !besetzenvar)
         {
             //dann werden nur truppen gesetzt
             if(owner.get_Figures() - Figurestomove >= 0)
@@ -233,7 +233,7 @@ public class World
         String Work = Playername;
         for(ContinentPatch cur : _Allcontinentpatchess)
         {
-            if(Work.equals(cur.get_owner()))
+            if(cur.get_owner() != null && Work.equals(cur.get_owner().get_name()))
             {
                 contilist.add(cur);
             }

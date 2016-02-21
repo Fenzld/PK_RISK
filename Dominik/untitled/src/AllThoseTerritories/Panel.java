@@ -26,6 +26,8 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
     private Image backgroundImage;
     JLabel _troopslabel;
     boolean playersetfigures = false;
+    private ContinentPatch selected;
+
     public Panel(World Continents)
     {
         this.setSize(1250,650);
@@ -144,7 +146,7 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
             if(!alreadypainted.contains(p.get_Name()))
             {
                 if(!p.get_hovered())
-                    g.setColor(c.brighter());
+                    g.setColor(c);
                 else
                     g.setColor(c.brighter());
 
@@ -159,30 +161,58 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
     @Override
     public void mouseClicked(MouseEvent a)
     {
-        for(ContinentPatch tmp : _Continents.get_Allcontinentpatchess())
+        if(a.getButton() == MouseEvent.BUTTON3)
         {
-            if(tmp.get_ContinentPatch().contains(a.getX(),a.getY()))
+            for(ContinentPatch tmp : _Continents.get_Allcontinentpatchess())
             {
-                switch (_currentstate)
+                if(tmp.get_ContinentPatch().contains(a.getX(),a.getY()))
                 {
-                    case begin:
-                        begin(tmp,one,KI);
-                        break;
-
-                    case normal:
-
-                        break;
-                    case end:
-                        break;
-
-                    case setfigures:
-                        setfigures(tmp,one,KI);
-                        break;
+                    if(selected != null)
+                    {
+                       switch (_Continents.Attack(selected,tmp))
+                       {
+                           case win:
+                               System.out.println("You successfully conquered " + tmp.get_Name());
+                               break;
+                           case notenoughmen:
+                               System.out.println("You dont have enough troops to attack!");
+                               break;
+                           case notallmendown:
+                               System.out.println("There are still men left on " + tmp.get_Name());
+                               break;
+                       }
+                    }
                 }
+            }
+        }
+        if(a.getButton() == MouseEvent.BUTTON1)
+        {
+            for(ContinentPatch tmp : _Continents.get_Allcontinentpatchess())
+            {
+                if(tmp.get_ContinentPatch().contains(a.getX(),a.getY()))
+                {
+                    switch (_currentstate)
+                    {
+                        case begin:
+                            begin(tmp,one,KI);
+                            break;
 
+                        case normal:
+                            selected = tmp;
+                            break;
+                        case end:
+                            break;
+
+                        case setfigures:
+                            setfigures(tmp,one,KI);
+                            break;
+                    }
+
+                }
             }
         }
         _troopslabel.setText("Troops: " + one.get_Figures());
+
     }
 
     private void NormalGame()
@@ -193,7 +223,7 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
     private void setfigures(ContinentPatch toconqu,Player p,Player ki)
     {
         String Figurecount = "";
-        if(toconqu.get_owner().equals(p.get_name()))
+        if(toconqu.get_owner().get_name().equals(p.get_name()))
             Figurecount = JOptionPane.showInputDialog(null, toconqu.get_Name() + " troops: " + toconqu.get_figuresonpatch(), "How many figures do you want to set ?");
 
         if(Figurecount != "" && Figurecount != null)
@@ -208,15 +238,13 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
             catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Invalid input");
             }
+            if(p.get_Figures() <= 0)
+            {
+                _currentstate = gamestate.normal;
+                System.out.println("current state normal");
+            }
         }
-        // _troopslabel.setText("Troops: " + p.get_Figures());
-
-
-        if(playersetfigures)
-        {
-            _currentstate = gamestate.normal;
-        }
-
+         //_troopslabel.setText("Troops: " + p.get_Figures());
     }
 
     private void begin(ContinentPatch toconqu,Player p,Player ki)
