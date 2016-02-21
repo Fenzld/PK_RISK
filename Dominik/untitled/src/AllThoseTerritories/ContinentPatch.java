@@ -25,9 +25,15 @@ public class ContinentPatch
         _owner = "";
     }
 
-    public void setFiguresonpatch(int figures)
+    public boolean setFiguresonpatch(int figures,Player p)
     {
-        _figuresonpatch = figures;
+        if(_owner.equals(p.get_name()))
+        {
+            _figuresonpatch = figures;
+            return true;
+        }
+
+        return false;
     }
 
     public ContinentPatch(String Name, Point Capital, List<ContinentPatch> neighbors)
@@ -62,6 +68,17 @@ public class ContinentPatch
     public String get_Name()
     {
         return _Name;
+    }
+
+    public int get_figuresonpatch()
+    {
+        return _figuresonpatch;
+    }
+
+    public void reduce_figuresonpatch(int reducecnt)
+    {
+        if(_figuresonpatch - reducecnt >= 0)
+            _figuresonpatch -= reducecnt;
     }
 
     public Polygon get_ContinentPatch()

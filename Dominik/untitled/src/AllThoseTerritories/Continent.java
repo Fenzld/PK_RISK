@@ -6,11 +6,12 @@ import java.util.*;
 public class Continent
 {
     private List<ContinentPatch> _Allpatches;
-    private int Bonus;
+    private int _Bonus;
 
-    public Continent(List<ContinentPatch> Patches)
+    public Continent(List<ContinentPatch> Patches,int bonus)
     {
         _Allpatches = Patches;
+        _Bonus = bonus;
     }
     public void addContinentPatch(ContinentPatch patch)
     {
@@ -37,7 +38,7 @@ public class Continent
 
     public int getBonus()
     {
-        return Bonus;
+        return _Bonus;
     }
 
 //    public List<ContinentPatch> get_Allpatches()

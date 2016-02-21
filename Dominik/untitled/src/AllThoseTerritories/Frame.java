@@ -10,7 +10,13 @@ public class Frame extends JFrame {
     public Frame (World Continents){
         this.setSize(1250,650);
 
+
+
         this.add(new Panel(Continents));
+        JLabel _troopslabel;
+
+
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

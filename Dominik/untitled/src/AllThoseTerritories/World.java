@@ -12,6 +12,7 @@ public class World
     List<String> _Capitals;
     List<Continent> _AllContinents;
     List<Player> _Players;
+    boolean first = true;
     boolean firstphasenotready = true;
 
     public World(List<ContinentPatch> Allcontinents,List<String> neighbors,List<String> ContinentPatches,List<String> Capitals)
@@ -31,7 +32,7 @@ public class World
 
     public void handoutfigures(Player p)
     {
-        p.add_figures(getContinentPatchesfromPlayer(p.get_name()).size() % 3);
+        p.add_figures(getContinentPatchesfromPlayer(p.get_name()).size() / 3);
         for (Continent a : get_owned_Continents(p.get_name()))
         {
             p.add_figures(a.getBonus());
@@ -80,7 +81,7 @@ public class World
                         currentcontinentlist.add(getContinentPatchwithname(curne));
                 }
             }
-            _AllContinents.add(new Continent(currentcontinentlist));
+            _AllContinents.add(new Continent(currentcontinentlist,Integer.parseInt(bonusnumber)));
 
         }
     }
@@ -119,25 +120,37 @@ public class World
 
     //dient zum besetzen eines Gebietes, solange noch feindliche Truppen auf dem Gebiet sind liefert die Methode false zurück und kann somit noch nicht besetzt werden.
     //wenn das Gebiet leer ist, wird der Owner auf "" gesetzt.
-    public boolean besetzen(String ContinentPatchname,Player owner,int Figurestomove)
+    public boolean besetzen(String ContinentPatchname,Player owner,int Figurestomove,boolean besetzenvar)
     {
         ContinentPatch tmp = getContinentPatchwithname(ContinentPatchname);
         if(tmp.get_owner().equals(""))
         {
-                if(owner.get_Figures() - Figurestomove > 0)
+            //der owner wird überschrieben, im falle in einem Continentpatch alle armeen geschlagen wurden, muss der owner auf "" gesetzt werden
+                if(owner.get_Figures() - Figurestomove >= 0)
                 {
                     tmp.setowner(owner.get_name());
-                    tmp.setFiguresonpatch(Figurestomove);
+                    tmp.setFiguresonpatch(Figurestomove,owner);
                     owner.reducefigures(Figurestomove);
                     System.out.println(owner.get_name() + " Conquered " + ContinentPatchname);
+                    return true;
                 }
+            else
+                    System.out.println("Select another continentpatch, "+ContinentPatchname+" is already owned.");
         }
-        else
+        else if(tmp.get_owner().equals(owner.get_name()) && !besetzenvar)
         {
-            System.out.println("Select another continentpatch, "+ContinentPatchname+" is already owned.");
-            return false;
+            //dann werden nur truppen gesetzt
+            if(owner.get_Figures() - Figurestomove >= 0)
+            {
+                tmp.setFiguresonpatch(Figurestomove, owner);
+                owner.reducefigures(Figurestomove);
+                return true;
+            }
+            else
+                System.out.println("You only have " + owner.get_Figures() + " troops left!");
         }
-        return true;
+
+            return false;
     }
 
     //public boolean battle(Player Playerwhoattacks,Player Playerwhodefends, String ContinentPatchname)

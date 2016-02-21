@@ -24,6 +24,8 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
     boolean begin;
     boolean working;
     private Image backgroundImage;
+    JLabel _troopslabel;
+    boolean playersetfigures = false;
     public Panel(World Continents)
     {
         this.setSize(1250,650);
@@ -31,8 +33,15 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
         _Continents = Continents;
         this.addMouseListener(this);
         _curPlayers = new ArrayList<Player>();
-        one = new Player("Dominik",22,Color.blue);
-        KI = new Player("KI",22,Color.red);
+        one = new Player("Dominik",21,Color.blue);
+        KI = new Player("KI",21,Color.red);
+
+        _troopslabel = new JLabel("Troops: " + one.get_Figures());
+        _troopslabel.setFont(new Font("Verdana", 1, 20));
+        _troopslabel.setLocation(990,570);
+        _troopslabel.setSize(250,50);
+        this.add(_troopslabel);
+
         c = Color.lightGray;
         begin = true;
         working = false;
@@ -44,6 +53,8 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
         catch (IOException e) {
             e.printStackTrace();
         }
+        this.validate();
+        this.repaint();
     }
     public enum gamestate
     {
@@ -117,12 +128,40 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
 
             }
         }
+        _troopslabel.setText("Troops: " + one.get_Figures());
+    }
+
+    private void NormalGame()
+    {
+
     }
 
     private void setfigures(ContinentPatch toconqu,Player p,Player ki)
     {
-        _Continents.handoutfigures(p);
-        _Continents.handoutfigures(ki);
+        String Figurecount = "";
+        if(toconqu.get_owner().equals(p.get_name()))
+            Figurecount = JOptionPane.showInputDialog(null, toconqu.get_Name() + " troops: " + toconqu.get_figuresonpatch(), "How many figures do you want to set ?");
+
+            if(Figurecount != "" && Figurecount != null)
+            {
+                int figureset = 0;
+                try
+                {
+                    figureset = Integer.parseInt(Figurecount);
+                    if(!_Continents.besetzen(toconqu.get_Name(),p,figureset,false))
+                        JOptionPane.showMessageDialog(null, "You dont have enough troops!");
+                }
+                catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Invalid input");
+                }
+            }
+        // _troopslabel.setText("Troops: " + p.get_Figures());
+
+
+        if(playersetfigures)
+        {
+            _currentstate = gamestate.normal;
+        }
 
     }
 
@@ -134,8 +173,9 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
             //Player setzt eine figur auf die gewünschte position, muss noch angepasst werden, wie viele figuren.
             if(!working)
             {
-                if(_Continents.besetzen(toconqu.get_Name(),p,1))
+                if(_Continents.besetzen(toconqu.get_Name(),p,1,true))
                 {
+                   // _troopslabel.setText("Troops: " + one.get_Figures());
 //                _g.setColor(p.get_Color());
 //                _g.fillPolygon(toconqu.get_ContinentPatch().xpoints,toconqu.get_ContinentPatch().ypoints,toconqu.get_ContinentPatch().npoints);
 //                paintComponent(_g);
@@ -152,7 +192,7 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
                         int rnd = rn.nextInt(_Continents.get_Allcontinentpatchess().size());
                         if(rnd < _Continents.get_Allcontinentpatchess().size())
                         {
-                            while(!_Continents.besetzen(_Continents.get_Allcontinentpatchess().get(rnd).get_Name(), ki, 1))
+                            while(!_Continents.besetzen(_Continents.get_Allcontinentpatchess().get(rnd).get_Name(), ki, 1,true))
                             {
                                 //tmp = Math.random() * 10;
                                 rnd = rn.nextInt(_Continents.get_Allcontinentpatchess().size());
@@ -166,7 +206,10 @@ public class Panel extends JPanel implements MouseListener, MouseMotionListener 
                     if(_Continents.checkifallcontinentsareconquered())
                     {
                         System.out.println("All continents conquered");
+                        _Continents.handoutfigures(one);
+                        _Continents.handoutfigures(KI);
                         _currentstate = gamestate.setfigures;
+                        _troopslabel.setText("Troops: " + one.get_Figures());
                     }
 
                 }
